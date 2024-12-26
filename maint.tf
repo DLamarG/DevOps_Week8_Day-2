@@ -78,16 +78,16 @@ resource "aws_instance" "lamar_react_instance" {
 
 
               # SECTION 1: React app setup
-              apt install -y git curl
-              apt update -y
-              apt install -y git
+              sudo apt install -y git curl
+              sudo apt update -y
+              sudo apt install -y git
               curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-              apt install -y nodejs
+              sudo apt install -y nodejs
               git clone https://github.com/mikhail-w/pokedex.git /home/ubuntu/react-app
               cd /home/ubuntu/react-app
               npm install
-              npm run dev -- --host --port 3000 &
-
+              #npm run dev -- --host --port 5000 &
+              nohup npm run dev -- --host --port 5000 > /home/ubuntu/react-app/app.log 2>&1 &
               EOF
 
   tags = {
