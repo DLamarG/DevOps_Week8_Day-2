@@ -60,16 +60,18 @@ resource "aws_instance" "lamar_react_instance" {
               # Update the system
               sudo apt update -y
               sudo apt upgrade -y
-              sudo apt install -y httpd
 
               # SECTION 1: React app setup
-              apt install -y git
+              sudo apt install -y git curl
               curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-              apt install -y nodejs
+              sudo apt install -y nodejs
               git clone https://github.com/mikhail-w/pokedex.git /home/ubuntu/react-app
               cd /home/ubuntu/react-app
-              npm install
-              PORT=5000 npm start
+              sudo chown -R $(whoami):$(id -g $(whoami)) /home/ubuntu/react-app
+              sudo npm install
+              export PORT=5000 
+              export HOST=0.0.0.0
+              npm start &
 
               # SECTION 2: Apache server setup
               apt install -y apache2
@@ -81,8 +83,8 @@ resource "aws_instance" "lamar_react_instance" {
                   <p>Public IP address of this instance is <b>$PUBLIC_IP</b></p>
               </body>
               </html>" > /var/www/html/index.html
-              sudo systemctl start apache2
-              sudo systemctl enable apache2
+              systemctl start apache2
+              systemctl enable apache2
               EOF
 
   tags = {
