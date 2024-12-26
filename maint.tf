@@ -61,34 +61,37 @@ resource "aws_instance" "lamar_react_instance" {
               sudo apt update -y
               sudo apt upgrade -y
 
-              # SECTION 1: React app setup
-              sudo apt install -y git curl
-              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
-              sudo apt install -y nodejs
-              git clone https://github.com/mikhail-w/pokedex.git /home/ubuntu/react-app
-              cd /home/ubuntu/react-app
-              sudo chown -R $(whoami):$(id -g $(whoami)) /home/ubuntu/react-app
-              sudo npm install
-              export PORT=5000 
-              export HOST=0.0.0.0
-              npm start &
 
               # SECTION 2: Apache server setup
-              apt install -y apache2
+              sudo apt install -y apache2
               TOKEN=`curl -X PUT "http://169.254.169.254/latest/api/token" -H "X-aws-ec2-metadata-token-ttl-seconds: 21600"` \
               && PUBLIC_IP=`curl -H "X-aws-ec2-metadata-token: $TOKEN" http://169.254.169.254/latest/meta-data/public-ipv4`
-              chmod -R 777 /var/www/html
+              sudo chmod -R 777 /var/www/html
               echo "<html>
               <body>
                   <p>Public IP address of this instance is <b>$PUBLIC_IP</b></p>
               </body>
               </html>" > /var/www/html/index.html
-              systemctl start apache2
-              systemctl enable apache2
+              sudo systemctl start apache2
+              sudo systemctl enable apache2
+
+
+
+              # SECTION 1: React app setup
+              apt install -y git curl
+              apt update -y
+              apt install -y git
+              curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+              apt install -y nodejs
+              git clone https://github.com/mikhail-w/pokedex.git /home/ubuntu/react-app
+              cd /home/ubuntu/react-app
+              npm install
+              npm run dev -- --host --port 3000 &
+
               EOF
 
   tags = {
-    Name = "LamarReactAppInstance"
+    Name = "PKR-AppInstance"
   }
 }
 
