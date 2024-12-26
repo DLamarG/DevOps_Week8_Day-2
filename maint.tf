@@ -69,7 +69,7 @@ resource "aws_instance" "lamar_react_instance" {
               git clone https://github.com/mikhail-w/pokedex.git /home/ubuntu/react-app
               cd /home/ubuntu/react-app
               npm install
-              npm run dev -- --host
+              PORT=5000 npm start
 
               # SECTION 2: Apache server setup
               apt install -y apache2
