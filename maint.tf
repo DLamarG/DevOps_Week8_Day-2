@@ -85,9 +85,8 @@ resource "aws_instance" "lamar_react_instance" {
               sudo apt install -y nodejs
               git clone https://github.com/mikhail-w/pokedex.git /home/ubuntu/react-app
               cd /home/ubuntu/react-app
-              npm install
-              #npm run dev -- --host --port 5000 &
-              nohup npm run dev -- --host --port 5000 > /home/ubuntu/react-app/app.log 2>&1 &
+              sudo apt install npm
+              npm run dev -- --host --port 3000 &
               EOF
 
   tags = {
